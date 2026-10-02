@@ -1,8 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Loader2, ChevronLeft, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
@@ -43,11 +41,9 @@ function ProductPage() {
   const { product } = Route.useLoaderData() as { product: ProductDetail };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <main className="bg-background">
       <ProductDetail product={product} />
-      <Footer />
-    </div>
+    </main>
   );
 }
 

@@ -1,58 +1,24 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { z } from "zod";
-import { ProductCard } from "@/components/ProductCard";
-import {
-  collectionProductsQueryOptions,
-  collectionsQueryOptions,
-  productsQueryOptions,
-} from "@/lib/shopify";
-import { Button } from "@/components/ui/button";
 import { ChevronDown, PawPrint } from "lucide-react";
+import { ProductCard } from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import type { ShopifyCollection, ShopifyProduct } from "@/lib/shopify";
 
-const searchSchema = z.object({ collection: z.string().optional() });
-
-const productsFor = (collection?: string) =>
-  collection ? collectionProductsQueryOptions(collection) : productsQueryOptions(50);
-
-export const Route = createFileRoute("/shop")({
-  validateSearch: (s) => searchSchema.parse(s),
-  head: () => ({
-    meta: [
-      { title: "Shop All Products — Copacetic Pets" },
-      {
-        name: "description",
-        content:
-          "Browse the full Copacetic Pets collection: harnesses, beds, feeders, travel gear and more for dogs, cats and small pets.",
-      },
-      { property: "og:title", content: "Shop All Products — Copacetic Pets" },
-      {
-        property: "og:description",
-        content: "Browse the full Copacetic Pets collection of practical pet gear.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  loaderDeps: ({ search }) => ({ collection: search.collection }),
-  loader: async ({ context, deps }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(collectionsQueryOptions()),
-      context.queryClient.ensureQueryData(productsFor(deps.collection)),
-    ]);
-  },
-  component: ShopPage,
-});
-
-function ShopPage() {
-  const { collection } = Route.useSearch();
-  const navigate = useNavigate({ from: "/shop" });
-  const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
-  const { data: products } = useSuspenseQuery(productsFor(collection));
+export function CollectionGrid({
+  title,
+  products,
+  collections,
+  activeHandle,
+}: {
+  title: string;
+  products: ShopifyProduct[];
+  collections: ShopifyCollection[];
+  activeHandle?: string;
+}) {
+  const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState(16);
   const visible = products.slice(0, visibleCount);
-  const current = collections.find((c) => c.handle === collection);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-12">
@@ -60,7 +26,7 @@ function ShopPage() {
         <div className="flex items-center gap-4">
           <span className="h-0.5 flex-1 bg-primary" />
           <h1 className="flex items-center gap-3 text-3xl font-extrabold uppercase text-primary sm:text-4xl">
-            <PawPrint className="h-8 w-8" /> {current ? current.title : "Our Collection"}
+            <PawPrint className="h-8 w-8 shrink-0" /> {title}
           </h1>
           <span className="h-0.5 flex-1 bg-primary" />
         </div>
@@ -73,10 +39,11 @@ function ShopPage() {
         <label className="relative w-full sm:w-72">
           <span className="sr-only">Choose a collection</span>
           <select
-            value={collection ?? ""}
+            value={activeHandle ?? ""}
             onChange={(e) => {
-              setVisibleCount(16);
-              navigate({ search: e.target.value ? { collection: e.target.value } : {} });
+              const handle = e.target.value;
+              if (handle) navigate({ to: "/shop/$handle", params: { handle } });
+              else navigate({ to: "/shop" });
             }}
             className="h-11 w-full appearance-none border-2 border-primary bg-background px-4 pr-10 text-sm font-bold uppercase tracking-wide text-primary focus:outline-none focus:ring-2 focus:ring-ring"
           >
@@ -95,7 +62,7 @@ function ShopPage() {
         <div className="mt-10 border border-dashed border-border bg-card p-12 text-center">
           <h2 className="font-display text-xl font-semibold">No products found</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-            Nothing in this collection yet. Check back soon or browse all products.
+            Nothing here yet. Check back soon or browse all products.
           </p>
         </div>
       ) : (

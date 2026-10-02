@@ -59,6 +59,16 @@ const BENEFITS = [
   },
 ];
 
+// Short note for the home-page collection sections: the first two sentences
+// of the Shopify collection description (collections store long paragraphs).
+function shortNote(description: string, max = 180) {
+  const sentences = description.replace(/\s+/g, " ").trim().split(/(?<=[.!?])\s+/);
+  const note = sentences.slice(0, 2).join(" ");
+  if (note.length <= max) return note;
+  const cut = note.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).trimEnd()}…`;
+}
+
 function Index() {
   const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
   const shownCollections = collections.slice(0, 4);
@@ -125,6 +135,8 @@ function Index() {
       {shownCollections.map((collection, i) => {
         const products = collectionResults[i]?.data ?? [];
         if (products.length === 0) return null;
+        const coverImage = collection.image?.url ?? products[0]?.node.images.edges[0]?.node.url;
+        const coverAlt = collection.image?.altText ?? collection.title;
         return (
           <section
             key={collection.handle}
@@ -132,12 +144,26 @@ function Index() {
           >
             <div className="mx-auto max-w-6xl">
               <div className="text-center">
-                <div className="flex items-center gap-4">
-                  <span className="h-0.5 flex-1 bg-primary" />
-                  <h2 className="flex items-center gap-3 text-2xl font-extrabold uppercase text-primary sm:text-3xl">
-                    <PawPrint className="h-7 w-7 shrink-0" /> {collection.title}
-                  </h2>
-                  <span className="h-0.5 flex-1 bg-primary" />
+                {coverImage && (
+                  <img
+                    src={coverImage}
+                    alt={coverAlt}
+                    className="mx-auto h-24 w-24 rounded-full border-2 border-primary/15 object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <h2 className="mt-4 text-2xl font-extrabold uppercase text-primary sm:text-3xl">
+                  {collection.title}
+                </h2>
+                {collection.description && (
+                  <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                    {shortNote(collection.description)}
+                  </p>
+                )}
+                <div className="mx-auto mt-4 flex max-w-[220px] items-center gap-3">
+                  <span className="h-0.5 flex-1 bg-primary/40" />
+                  <PawPrint className="h-5 w-5 shrink-0 text-primary" />
+                  <span className="h-0.5 flex-1 bg-primary/40" />
                 </div>
               </div>
 

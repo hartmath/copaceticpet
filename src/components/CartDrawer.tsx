@@ -46,7 +46,13 @@ export const CartDrawer = () => {
   const handleCheckout = () => {
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
-      window.location.href = checkoutUrl;
+      // Shopify checkout refuses to load inside an embedded frame (e.g. the editor preview),
+      // so break out to a new tab there; on the live site it opens in the same tab.
+      if (window.self !== window.top) {
+        window.open(checkoutUrl, "_blank");
+      } else {
+        window.location.href = checkoutUrl;
+      }
     }
   };
 

@@ -60,8 +60,13 @@ const BENEFITS = [
 ];
 
 function Index() {
-  const { data: products } = useSuspenseQuery(productsQueryOptions(8));
-  const featured = products.slice(0, 8);
+  const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
+  const shownCollections = collections.slice(0, 4);
+  const collectionResults = useSuspenseQueries({
+    queries: shownCollections.map((c) =>
+      collectionProductsQueryOptions(c.handle, 4)
+    ),
+  });
 
   return (
     <main>

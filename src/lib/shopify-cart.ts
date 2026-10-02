@@ -19,6 +19,12 @@ export interface CartItem {
   selectedOptions: Array<{ name: string; value: string }>;
 }
 
+export interface CartMutationResult {
+  success: boolean;
+  lineId?: string | undefined;
+  cartNotFound?: boolean | undefined;
+}
+
 const CART_QUERY = `
   query cart($id: ID!) {
     cart(id: $id) { id totalQuantity }
@@ -123,7 +129,7 @@ export async function createShopifyCart(
 export async function addLineToShopifyCart(
   cartId: string,
   item: CartItem
-): Promise<{ success: boolean; lineId?: string; cartNotFound?: boolean }> {
+): Promise<CartMutationResult> {
   const data = await storefrontApiRequest<{
     data: {
       cartLinesAdd: {
@@ -149,14 +155,15 @@ export async function addLineToShopifyCart(
 
   const lines = data?.data?.cartLinesAdd?.cart?.lines?.edges || [];
   const newLine = lines.find((l) => l.node.merchandise.id === item.variantId);
-  return { success: true, lineId: newLine?.node?.id };
+  const lineId = newLine?.node?.id;
+  return lineId ? { success: true, lineId } : { success: true };
 }
 
 export async function updateShopifyCartLine(
   cartId: string,
   lineId: string,
   quantity: number
-): Promise<{ success: boolean; cartNotFound?: boolean }> {
+): Promise<CartMutationResult> {
   const data = await storefrontApiRequest<{
     data: {
       cartLinesUpdate: {

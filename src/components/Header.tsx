@@ -10,7 +10,7 @@ const NAV_LINKS = [
 
 export function Header() {
   const scrollTo = (href: string) => {
-    const id = href.split("#")[1];
+    const id = href.split("#")[1] ?? "";
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 

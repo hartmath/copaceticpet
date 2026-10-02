@@ -37,7 +37,7 @@ export function ProductCard({ product }: { product: ProductNode }) {
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
     await addItem({
-      product,
+      product: { node: product },
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,

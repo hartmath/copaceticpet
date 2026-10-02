@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+<!-- LOVABLE:BEGIN -->
+## Storefront architecture
+- Shopify Storefront API is called client-side (publishable token, 2025-07 API) from src/lib/shopify.ts; cart state lives in src/stores/cartStore.ts (Zustand + persist) and checkout only ever uses the cartCreate checkoutUrl with channel=online_store. Why: Shopify integration knowledge mandates Storefront API carts, never manual checkout URLs.

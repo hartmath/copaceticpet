@@ -10,7 +10,8 @@ import { formatMoney, productQueryOptions, type ProductDetail } from "@/lib/shop
 
 export const Route = createFileRoute("/product/$handle")({
   head: ({ match }) => {
-    const product = match.loaderData?.product as ProductDetail | null | undefined;
+    const loader = match.loaderData as { product?: ProductDetail } | undefined;
+    const product = loader?.product;
     const title = product?.title
       ? `${product.title} — Copacetic Pets`
       : "Product — Copacetic Pets";
@@ -66,7 +67,8 @@ function ProductDetail({ product }: { product: ProductDetail }) {
       );
       initial[option.name] =
         firstVariant?.selectedOptions.find((so) => so.name === option.name)?.value ??
-        option.values[0];
+        option.values[0] ??
+        "";
     }
     return initial;
   });

@@ -159,6 +159,59 @@ export const productsQueryOptions = (first: number) =>
     staleTime: 1000 * 60 * 5,
   });
 
+export interface ShopifyCollection {
+  handle: string;
+  title: string;
+}
+
+const COLLECTIONS_QUERY = `
+  query GetCollections { collections(first: 50) { edges { node { handle title } } } }
+`;
+
+const COLLECTION_PRODUCTS_QUERY = `
+  query GetCollectionProducts($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      products(first: $first) {
+        edges {
+          node {
+            id title description handle
+            priceRange { minVariantPrice { amount currencyCode } }
+            images(first: 5) { edges { node { url altText } } }
+            variants(first: 50) {
+              edges { node { id title price { amount currencyCode } availableForSale selectedOptions { name value } } }
+            }
+            options { name values }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const collectionsQueryOptions = () =>
+  queryOptions({
+    queryKey: ["shopify", "collections"],
+    queryFn: async (): Promise<ShopifyCollection[]> => {
+      const data = await storefrontApiRequest<{
+        data: { collections: { edges: Array<{ node: ShopifyCollection }> } };
+      }>(COLLECTIONS_QUERY);
+      return (data?.data?.collections?.edges ?? []).map((e) => e.node);
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+export const collectionProductsQueryOptions = (handle: string, first = 100) =>
+  queryOptions({
+    queryKey: ["shopify", "collection", handle, first],
+    queryFn: async (): Promise<ShopifyProduct[]> => {
+      const data = await storefrontApiRequest<{
+        data: { collection: { products: { edges: ShopifyProduct[] } } | null };
+      }>(COLLECTION_PRODUCTS_QUERY, { handle, first });
+      return data?.data?.collection?.products?.edges ?? [];
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
 export interface ProductDetail {
   id: string;
   title: string;

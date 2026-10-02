@@ -64,7 +64,9 @@ const BENEFITS = [
 function shortNote(description: string, max = 180) {
   const sentences = description.replace(/\s+/g, " ").trim().split(/(?<=[.!?])\s+/);
   const note = sentences.slice(0, 2).join(" ");
-  return note.length <= max ? note : `${note.slice(0, max).trimEnd()}…`;
+  if (note.length <= max) return note;
+  const cut = note.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).trimEnd()}…`;
 }
 
 function Index() {

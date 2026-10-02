@@ -1,18 +1,23 @@
-import { Link } from "@tanstack/react-router";
-import { PawPrint } from "lucide-react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { PawPrint, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { CartDrawer } from "@/components/CartDrawer";
 
 const NAV_LINKS = [
-  { label: "Shop", href: "/#shop" },
-  { label: "Why Copacetic", href: "/#why" },
-  { label: "Contact", href: "/#contact" },
-];
+  { label: "Home", to: "/" },
+  { label: "Shop", to: "/shop" },
+  { label: "About", to: "/about" },
+  { label: "FAQ", to: "/faq" },
+  { label: "Contact", to: "/contact" },
+] as const;
 
 export function Header() {
-  const scrollTo = (href: string) => {
-    const id = href.split("#")[1] ?? "";
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-40 bg-background shadow-sm">
@@ -39,18 +44,44 @@ export function Header() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
-            <button
+            <Link
               key={link.label}
-              onClick={() => scrollTo(link.href)}
+              to={link.to}
               className="text-xs font-bold uppercase tracking-wide text-primary transition-opacity hover:opacity-70"
+              activeProps={{ className: "border-b-2 border-primary" }}
+              activeOptions={{ exact: link.to === "/" }}
             >
               {link.label}
-            </button>
+            </Link>
           ))}
         </nav>
 
-        <CartDrawer />
+        <div className="flex items-center gap-1">
+          <CartDrawer />
+          <button
+            className="flex h-10 w-10 items-center justify-center text-primary md:hidden"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
+
+      {menuOpen && (
+        <nav className="border-t border-border bg-background md:hidden">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              className="block border-b border-border px-4 py-3.5 text-sm font-bold uppercase tracking-wide text-primary"
+              activeOptions={{ exact: link.to === "/" }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

@@ -3,7 +3,7 @@ import { PawPrint, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer id="contact" className="bg-primary text-primary-foreground">
+    <footer className="bg-primary text-primary-foreground">
       <div className="mx-auto max-w-6xl px-4 py-14">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
@@ -27,14 +27,12 @@ export function Footer() {
             </h3>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
-                <button
-                  onClick={() =>
-                    document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })
-                  }
+                <Link
+                  to="/shop"
                   className="text-primary-foreground/85 hover:text-primary-foreground"
                 >
                   All products
-                </button>
+                </Link>
               </li>
               <li>
                 <Link
@@ -42,6 +40,30 @@ export function Footer() {
                   className="text-primary-foreground/85 hover:text-primary-foreground"
                 >
                   Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className="text-primary-foreground/85 hover:text-primary-foreground"
+                >
+                  About us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faq"
+                  className="text-primary-foreground/85 hover:text-primary-foreground"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-primary-foreground/85 hover:text-primary-foreground"
+                >
+                  Contact
                 </Link>
               </li>
             </ul>

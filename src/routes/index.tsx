@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
-import { productsQueryOptions } from "@/lib/shopify";
+import {
+  collectionProductsQueryOptions,
+  collectionsQueryOptions,
+} from "@/lib/shopify";
 import { Button } from "@/components/ui/button";
 import {
   Sparkles,
@@ -28,7 +31,7 @@ export const Route = createFileRoute("/")({
     ],
   }),
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(productsQueryOptions(8));
+    await context.queryClient.ensureQueryData(collectionsQueryOptions());
   },
   component: Index,
 });

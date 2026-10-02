@@ -155,7 +155,7 @@ function Index() {
                 </h2>
                 {collection.description && (
                   <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                    {collection.description}
+                    {shortNote(collection.description)}
                   </p>
                 )}
                 <div className="mx-auto mt-4 flex max-w-[220px] items-center gap-3">

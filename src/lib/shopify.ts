@@ -162,10 +162,12 @@ export const productsQueryOptions = (first: number) =>
 export interface ShopifyCollection {
   handle: string;
   title: string;
+  description: string;
+  image: { url: string; altText: string | null } | null;
 }
 
 const COLLECTIONS_QUERY = `
-  query GetCollections { collections(first: 50) { edges { node { handle title } } } }
+  query GetCollections { collections(first: 50) { edges { node { handle title description image { url altText } } } } }
 `;
 
 const COLLECTION_PRODUCTS_QUERY = `

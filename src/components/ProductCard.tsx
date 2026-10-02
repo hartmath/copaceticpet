@@ -51,7 +51,7 @@ export function ProductCard({ product }: { product: ProductNode }) {
   const soldOut = selectedVariant ? !selectedVariant.availableForSale : false;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgba(46,74,58,0.06)] transition-shadow hover:shadow-[0_8px_24px_rgba(46,74,58,0.12)]">
+    <div className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card transition-shadow hover:shadow-lg">
       <Link
         to="/product/$handle"
         params={{ handle: product.handle }}
@@ -101,13 +101,13 @@ export function ProductCard({ product }: { product: ProductNode }) {
         )}
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-1">
-          <span className="font-display text-base font-semibold">
+          <span className="font-display text-base font-bold text-primary">
             {formatMoney(price.amount, price.currencyCode)}
           </span>
           <Button
             onClick={handleAddToCart}
             disabled={isLoading || !selectedVariant || soldOut}
-            className="h-9 rounded-full px-4 text-sm"
+            className="h-9 rounded-none px-4 text-xs font-semibold uppercase tracking-widest"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

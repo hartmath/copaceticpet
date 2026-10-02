@@ -100,14 +100,14 @@ export function ProductCard({ product }: { product: ProductNode }) {
           </select>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-2 pt-1">
+        <div className="mt-auto flex flex-col gap-2 pt-1 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-display text-base font-bold text-primary">
             {formatMoney(price.amount, price.currencyCode)}
           </span>
           <Button
             onClick={handleAddToCart}
             disabled={isLoading || !selectedVariant || soldOut}
-            className="h-9 rounded-none px-4 text-xs font-semibold uppercase tracking-widest"
+            className="h-10 w-full rounded-none px-4 text-xs font-semibold uppercase tracking-widest sm:h-9 sm:w-auto"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

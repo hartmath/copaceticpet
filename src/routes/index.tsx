@@ -59,6 +59,14 @@ const BENEFITS = [
   },
 ];
 
+// Short note for the home-page collection sections: the first two sentences
+// of the Shopify collection description (collections store long paragraphs).
+function shortNote(description: string, max = 180) {
+  const sentences = description.replace(/\s+/g, " ").trim().split(/(?<=[.!?])\s+/);
+  const note = sentences.slice(0, 2).join(" ");
+  return note.length <= max ? note : `${note.slice(0, max).trimEnd()}…`;
+}
+
 function Index() {
   const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
   const shownCollections = collections.slice(0, 4);

@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
-import { productsQueryOptions } from "@/lib/shopify";
+import {
+  collectionProductsQueryOptions,
+  collectionsQueryOptions,
+} from "@/lib/shopify";
 import { Button } from "@/components/ui/button";
 import {
   Sparkles,
@@ -28,7 +31,7 @@ export const Route = createFileRoute("/")({
     ],
   }),
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(productsQueryOptions(8));
+    await context.queryClient.ensureQueryData(collectionsQueryOptions());
   },
   component: Index,
 });
@@ -57,8 +60,13 @@ const BENEFITS = [
 ];
 
 function Index() {
-  const { data: products } = useSuspenseQuery(productsQueryOptions(8));
-  const featured = products.slice(0, 8);
+  const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
+  const shownCollections = collections.slice(0, 4);
+  const collectionResults = useSuspenseQueries({
+    queries: shownCollections.map((c) =>
+      collectionProductsQueryOptions(c.handle, 4)
+    ),
+  });
 
   return (
     <main>
@@ -113,38 +121,58 @@ function Index() {
         </div>
       </section>
 
-      {/* Featured products */}
-      <section className="mx-auto max-w-6xl px-4 py-10">
-        <div className="text-center">
-          <div className="flex items-center gap-4">
-            <span className="h-0.5 flex-1 bg-primary" />
-            <h2 className="flex items-center gap-3 text-3xl font-extrabold uppercase text-primary sm:text-4xl">
-              <PawPrint className="h-8 w-8" /> Featured Finds
-            </h2>
-            <span className="h-0.5 flex-1 bg-primary" />
-          </div>
-        </div>
+      {/* Collection sections */}
+      {shownCollections.map((collection, i) => {
+        const products = collectionResults[i]?.data ?? [];
+        if (products.length === 0) return null;
+        return (
+          <section
+            key={collection.handle}
+            className={`px-4 py-12 ${i % 2 === 1 ? "bg-muted/40" : ""}`}
+          >
+            <div className="mx-auto max-w-6xl">
+              <div className="text-center">
+                <div className="flex items-center gap-4">
+                  <span className="h-0.5 flex-1 bg-primary" />
+                  <h2 className="flex items-center gap-3 text-2xl font-extrabold uppercase text-primary sm:text-3xl">
+                    <PawPrint className="h-7 w-7 shrink-0" /> {collection.title}
+                  </h2>
+                  <span className="h-0.5 flex-1 bg-primary" />
+                </div>
+              </div>
 
-        {featured.length > 0 && (
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {featured.map((product) => (
-              <ProductCard key={product.node.id} product={product.node} />
-            ))}
-          </div>
-        )}
+              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                {products.map((product) => (
+                  <ProductCard key={product.node.id} product={product.node} />
+                ))}
+              </div>
 
-        <div className="mt-10 text-center">
-          <Link to="/shop">
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-none font-bold uppercase tracking-widest"
-            >
-              View all products
-            </Button>
-          </Link>
-        </div>
-      </section>
+              <div className="mt-8 text-center">
+                <Link to="/shop/$handle" params={{ handle: collection.handle }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="rounded-none font-bold uppercase tracking-widest"
+                  >
+                    View {collection.title}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      <div className="mx-auto max-w-6xl px-4 pb-12 text-center">
+        <Link to="/shop">
+          <Button
+            size="lg"
+            className="rounded-none font-bold uppercase tracking-widest"
+          >
+            View all products
+          </Button>
+        </Link>
+      </div>
 
       {/* Why Copacetic */}
       <section className="bg-primary py-16 text-primary-foreground">

@@ -16,7 +16,7 @@ const searchSchema = z.object({ collection: z.string().optional() });
 const productsFor = (collection?: string) =>
   collection ? collectionProductsQueryOptions(collection) : productsQueryOptions(50);
 
-export const Route = createFileRoute("/shop")({
+export const Route = createFileRoute("/shop/")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/shop")({
 
 function ShopPage() {
   const { collection } = Route.useSearch();
-  const navigate = useNavigate({ from: "/shop" });
+  const navigate = useNavigate({ from: "/shop/" });
   const { data: collections } = useSuspenseQuery(collectionsQueryOptions());
   const { data: products } = useSuspenseQuery(productsFor(collection));
   const [visibleCount, setVisibleCount] = useState(16);

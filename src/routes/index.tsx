@@ -11,9 +11,9 @@ import {
   Truck,
   ShieldCheck,
   HeartHandshake,
-  ArrowDown,
+  PawPrint,
 } from "lucide-react";
-import heroImage from "@/assets/hero-pets.png";
+import heroImage from "@/assets/hero-dog.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -72,58 +72,46 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-8 pt-10 md:grid-cols-2 md:pt-16">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-secondary-foreground">
-                New gear, every week
-              </span>
-              <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl">
-                Everything your pet needs.
+          <img
+            src={heroImage}
+            alt="A happy golden retriever relaxing on the grass"
+            width={1920}
+            height={832}
+            className="absolute inset-0 h-full w-full object-cover object-right"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/50 to-transparent" />
+          <div className="relative mx-auto flex min-h-[460px] max-w-6xl items-center px-4 py-16 md:min-h-[600px]">
+            <div className="max-w-xl">
+              <h1 className="font-script text-5xl leading-tight text-primary sm:text-7xl">
+                Good Gear.
                 <br />
-                <span className="text-accent">Nothing they don't.</span>
+                Happy Pets.
               </h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-                Copacetic Pets brings you a tight, curated lineup of practical
-                pet supplies — from harnesses and cooling mats to feeders,
-                travel kit, and toys that keep tails wagging.
+              <p className="mt-6 text-xl font-medium text-foreground sm:text-2xl">
+                Everyday essentials for the pets you love.
               </p>
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Button
-                  size="lg"
-                  className="h-12 rounded-full px-7 text-base"
-                  onClick={() =>
-                    document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Shop the collection
-                  <ArrowDown className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="relative">
-              <img
-                src={heroImage}
-                alt="A golden retriever and an orange cat surrounded by pet gear"
-                width={1600}
-                height={900}
-                className="w-full rounded-3xl"
-              />
+              <Button
+                size="lg"
+                className="mt-8 h-12 rounded-none px-8 text-sm font-bold uppercase tracking-[0.25em]"
+                onClick={() =>
+                  document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
+                Shop now
+              </Button>
             </div>
           </div>
         </section>
 
         {/* Benefits */}
-        <section className="mx-auto max-w-6xl px-4 py-10">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mx-auto max-w-6xl px-4 py-14">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {BENEFITS.map((benefit) => (
-              <div
-                key={benefit.title}
-                className="rounded-2xl border border-border/60 bg-card p-5"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sage text-sage-foreground">
-                  <benefit.icon className="h-5 w-5" />
+              <div key={benefit.title} className="flex flex-col items-center text-center">
+                <span className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <benefit.icon className="h-9 w-9" />
                 </span>
-                <h3 className="mt-4 font-display text-base font-semibold">
+                <h3 className="mt-4 text-base font-extrabold uppercase text-primary">
                   {benefit.title}
                 </h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
@@ -136,15 +124,17 @@ function Index() {
 
         {/* Product grid */}
         <section id="shop" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-10">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="font-display text-3xl font-semibold tracking-tight">
-                Shop the collection
+          <div className="text-center">
+            <div className="flex items-center gap-4">
+              <span className="h-0.5 flex-1 bg-primary" />
+              <h2 className="flex items-center gap-3 text-3xl font-extrabold uppercase text-primary sm:text-4xl">
+                <PawPrint className="h-8 w-8" /> Our Collection
               </h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                {products.length} products for dogs, cats, birds & small pets
-              </p>
+              <span className="h-0.5 flex-1 bg-primary" />
             </div>
+            <p className="mt-2 font-semibold text-primary">
+              {products.length} finds for dogs, cats & small pets
+            </p>
           </div>
 
           {products.length === 0 ? (
@@ -167,7 +157,7 @@ function Index() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="rounded-full"
+                    className="rounded-none font-bold uppercase tracking-widest"
                     onClick={() => setVisibleCount((c) => c + 12)}
                   >
                     Load more products
@@ -179,17 +169,17 @@ function Index() {
         </section>
 
         {/* Why Copacetic */}
-        <section id="why" className="scroll-mt-24 bg-secondary/50 py-16">
+        <section id="why" className="scroll-mt-24 bg-primary py-16 text-primary-foreground">
           <div className="mx-auto max-w-3xl px-4 text-center">
-            <h2 className="font-display text-3xl font-semibold tracking-tight">
+            <h2 className="text-3xl font-extrabold uppercase">
               Why pet parents shop Copacetic
             </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
+            <p className="mt-4 leading-relaxed opacity-90">
               "Copacetic" means everything is exactly as it should be. That's
               the standard we hold for every harness, feeder, bed, and toy in
               the shop — gear that simply works, at prices that make sense.
             </p>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
+            <p className="mt-4 leading-relaxed opacity-90">
               We keep the catalog small on purpose. Each product earns its
               place by solving a real problem — wet paws, bored kittens, long
               car rides — so you can shop in minutes, not hours.

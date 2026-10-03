@@ -77,8 +77,6 @@ const CART_LINES_REMOVE_MUTATION = `
 export function formatCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl);
-    // The store's custom primary domain doesn't serve checkout reliably; use the permanent myshopify domain.
-    url.hostname = "uw015p-h1.myshopify.com";
     url.searchParams.set("channel", "online_store"); // Required for checkout to work without password
     return url.toString();
   } catch {
